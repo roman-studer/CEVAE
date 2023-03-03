@@ -137,3 +137,5 @@ configuration/wandb.yaml
 # models
 models/
 wandb/
+
+.idea/
