@@ -1,0 +1,4 @@
+working_dir: './CEVEA/'
+model_dir: './models/'
+data_dir: './data/'
+config_dir: './configuration/'

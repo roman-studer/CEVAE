@@ -1,0 +1,3 @@
+project_name: "CEVAE"
+config_dir: './CEVAE/configuration/'
+random_state: 42
