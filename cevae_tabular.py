@@ -9,41 +9,45 @@ from scripts.loss import TripletLoss, CustomLoss
 from scripts.helpers import EarlyStopping
 
 
-def main(hp):
+def main(params):
 	# init wandb
 	wandb_logger = WandBLogger()
-	wandb_logger.log_config(hp)
+
+	# get run name
+	name = wandb_logger.run_name
+
+	wandb_logger.log_config(params)
 
 	early_stopping = EarlyStopping(args, verbose=True, maximize=False)
 
 	# check device
-	if hp.device == 'cuda':
+	if params.device == 'cuda':
 		device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	else:
 		device = torch.device('cpu')
 
 	# load data
-	train_dataset = dataloader.TripletDataset(label_col=hp.target_label, setting='train')
-	test_dataset = dataloader.TripletDataset(label_col=hp.target_label, setting='test')
-	train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=hp.batch_size, shuffle=True, num_workers=2)
-	test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=hp.batch_size, shuffle=False, num_workers=2)
+	train_dataset = dataloader.TripletDataset(label_col=params.target_label, setting='train')
+	test_dataset = dataloader.TripletDataset(label_col=params.target_label, setting='test')
+	train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=params.batch_size, shuffle=True, num_workers=2)
+	test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=params.batch_size, shuffle=False, num_workers=2)
 
 	input_dim = len(train_dataset.data.columns) - 1
 
-	model = vae.VAE(input_dim, hp.hidden_dim, hp.latent_dim, device)
+	model = vae.VAE(input_dim, params.hidden_dim, params.latent_dim, device)
 
 	# optimizer
-	optimizer = torch.optim.Adam(model.parameters(), lr=hp.learning_rate)
+	optimizer = torch.optim.Adam(model.parameters(), lr=params.learning_rate)
 
 	# loss
 	criterion = CustomLoss().to(device)
-	criterion_triplet = TripletLoss(hp.margin).to(device)
+	criterion_triplet = TripletLoss(params.margin).to(device)
 
 	# training
 	col_names = train_loader.dataset.data.columns
 
 	best_current_loss = None
-	for epoch in range(hp.epochs):
+	for epoch in range(params.epochs):
 		model.train()
 		running_loss = 0.0
 		running_triplet = 0.0
@@ -71,7 +75,7 @@ def main(hp):
 			# harmonic mean of both losses
 			h = 2 / (1 / loss_contrastive + 1 / loss_bce)
 
-			loss = hp.weight_triplet_loss * loss_contrastive + hp.weight_custom_loss * loss_bce
+			loss = params.weight_triplet_loss * loss_contrastive + params.weight_custom_loss * loss_bce
 			loss.backward()
 			optimizer.step()
 
@@ -84,7 +88,6 @@ def main(hp):
 		                          'train_loss_triplet': running_triplet / len(train_loader),
 		                          'train_loss_contrastive': running_contrastive / len(train_loader),
 		                          'h': h}, epoch)
-
 
 		# test model
 		model.eval()
@@ -107,7 +110,7 @@ def main(hp):
 			loss_bce = torch.sum(criterion(outputs, inputs, mu, logvar, col_names)) / outputs.shape[0]
 			h = 2 / (1 / loss_contrastive + 1 / loss_bce)
 
-			loss = hp.weight_triplet_loss * loss_contrastive + hp.weight_custom_loss * loss_bce
+			loss = params.weight_triplet_loss * loss_contrastive + params.weight_custom_loss * loss_bce
 
 			running_loss += loss.item()
 			running_triplet += loss_contrastive.item()
@@ -127,7 +130,7 @@ def main(hp):
 				print("Early stopping")
 				sys.exit()
 
-		if hp.verbose:
+		if params.verbose:
 			if epoch % 2 == 0:
 				print("Epoch {} loss: {:.4f}".format(epoch + 1, running_loss / len(train_loader)))
 				print("Contrastive loss: {:.4f}".format(running_contrastive/len(train_loader)))
@@ -139,9 +142,8 @@ def main(hp):
 
 			if best_current_loss > running_loss / len(train_loader):
 				best_current_loss = running_loss / len(train_loader)
-				torch.save(model.state_dict(), paths.model_dir + 'checkpoints/best_model.pt')
+				torch.save(model.state_dict(), paths.model_dir + f'checkpoints/{name}.pt')
 				print('Model saved')
-
 
 
 if __name__ == '__main__':
@@ -178,6 +180,7 @@ if __name__ == '__main__':
 	parser.add_argument('--early_stop_min_delta', type=float, default=1.0)
 	parser.add_argument('--early_stop_metric', type=str, default='h', help='metric to use for early stopping')
 	parser.add_argument('--early_stop_mode', type=str, default='min', help='mode for early stopping (min or max)')
+	parser.add_argument('--save_best_model', action='store_true', default=False)
 
 	args = parser.parse_args()
 

@@ -8,6 +8,7 @@ class WandBLogger:
         c = config.WandBConfig()
         self.wandb = wandb
         self.wandb.init(project=c.project_name, entity=c.entity, name=c.run_name)
+        self.run_name = self.wandb.run.name
 
     @staticmethod
     def log_confusion_matrix(y_true, y_pred, class_names) -> None:
