@@ -1,4 +1,4 @@
-working_dir: './CEVEA/'
+working_dir: 'workspace'
 model_dir: './models/'
 data_dir: './data/'
 config_dir: './configuration/'

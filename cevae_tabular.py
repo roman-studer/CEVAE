@@ -151,7 +151,7 @@ if __name__ == '__main__':
 
 	# use argument parser to update config
 	parser = argparse.ArgumentParser(description="PyTorch implementation of Contrastive Learning, Hyperparemters")
-	parser.add_argument('--base', type=str, default='workspace', help='path to base')
+	parser.add_argument('--base', type=str, default=paths.working_dir, help='path to base')
 	parser.add_argument('--project_name', type=str, default=base_config.project_name, help='name of project')
 	parser.add_argument('--random_state', type=int, default=base_config.random_state, help='random state')
 

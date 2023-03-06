@@ -1,3 +1,3 @@
 project_name: "CEVAE"
-config_dir: './CEVAE/configuration/'
+config_dir: './configuration/'
 random_state: 42
