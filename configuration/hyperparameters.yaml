@@ -7,5 +7,5 @@ device: 'cuda'
 verbose: False
 margin: 1.0
 target_label: "family"
-weight_triplet_loss: 1.0
-weight_custom_loss: 0.1
+weight_triplet_loss: 2.0
+weight_custom_loss: 0.05
