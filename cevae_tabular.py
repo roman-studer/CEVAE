@@ -177,7 +177,7 @@ if __name__ == '__main__':
 	parser.add_argument('--device', type=str, default=hp.device, help='device to use')
 
 	# early stopping
-	parser.add_argument('--use_early_stop', action='store_true', default=True)
+	parser.add_argument('--use_early_stop', action='store_true', default=False)
 	parser.add_argument('--early_stop_patience', type=int, default=100)
 	parser.add_argument('--early_stop_min_delta', type=float, default=1.0)
 	parser.add_argument('--early_stop_metric', type=str, default='h', help='metric to use for early stopping')
