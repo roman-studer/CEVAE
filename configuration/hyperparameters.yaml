@@ -9,3 +9,11 @@ margin: 1.0
 target_label: "family"
 weight_triplet_loss: 2.0
 weight_custom_loss: 0.05
+
+# early stop
+use_early_stop: False
+early_stop_patience: 100
+early_stop_min_delta: 1.0
+early_stop_metric: "h"
+early_stop_mode: "min"
+save_best_model: True

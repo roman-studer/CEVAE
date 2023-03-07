@@ -18,7 +18,8 @@ def main(params):
 
 	wandb_logger.log_config(params)
 
-	early_stopping = EarlyStopping(args, verbose=True, maximize=False)
+	if params.use_early_stop:
+		early_stopping = EarlyStopping(args, verbose=True, maximize=False)
 
 	# check device
 	if params.device == 'cuda':
@@ -123,12 +124,13 @@ def main(params):
 			                          'h': h
 			                          }, epoch)
 
-			early_stopping(h, model, args)
-			if early_stopping.early_stop:
-				wandb_logger.log_config({'early_stop': True})
-				wandb_logger.finish()
-				print("Early stopping")
-				sys.exit()
+			if params.use_early_stop:
+				early_stopping(h, model, args)
+				if early_stopping.early_stop:
+					wandb_logger.log_config({'early_stop': True})
+					wandb_logger.finish()
+					print("Early stopping")
+					sys.exit()
 
 		if params.verbose:
 			if epoch % 2 == 0:
