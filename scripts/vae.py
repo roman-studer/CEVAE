@@ -7,14 +7,17 @@ class Encoder(nn.Module):
 	def __init__(self, input_dim, hidden_dim, latent_dim):
 		super(Encoder, self).__init__()
 		self.fc1 = nn.Linear(input_dim, hidden_dim)
-		self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-		self.fc31 = nn.Linear(hidden_dim, latent_dim)
-		self.fc32 = nn.Linear(hidden_dim, latent_dim)
+		#self.fc2 = nn.Linear(hidden_dim, hidden_dim)
+		self.fc2 = nn.Linear(hidden_dim, 20)
+		self.fc31 = nn.Linear(20, latent_dim)
+		self.fc32 = nn.Linear(20, latent_dim)
 
 	def forward(self, x):
 		h = F.relu(self.fc1(x))
 		h = F.relu(self.fc2(h))
-		return self.fc31(h), self.fc32(h)
+		mu = self.fc31(h)
+		sigma = self.fc32(h)
+		return mu, sigma
 
 
 class Decoder(nn.Module):

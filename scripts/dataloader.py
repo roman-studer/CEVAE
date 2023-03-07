@@ -192,7 +192,7 @@ class TripletDataset(Dataset, ABC):
         label = self.data.iloc[idx][self.label_col]
 
         # get anchor and positive from label
-        anchor_idx = np.random.choice(self.data[self.data[self.label_col] == label].index)
+        anchor_idx = self.data.iloc[idx].index
         positive_idx = np.random.choice(self.data[self.data[self.label_col] == label].index)
 
         # get negative from different label
