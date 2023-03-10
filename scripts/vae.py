@@ -8,9 +8,9 @@ class Encoder(nn.Module):
 		super(Encoder, self).__init__()
 		self.fc1 = nn.Linear(input_dim, hidden_dim)
 		#self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-		self.fc2 = nn.Linear(hidden_dim, 20)
-		self.fc31 = nn.Linear(20, latent_dim)
-		self.fc32 = nn.Linear(20, latent_dim)
+		self.fc2 = nn.Linear(hidden_dim, hidden_dim)
+		self.fc31 = nn.Linear(hidden_dim, latent_dim)
+		self.fc32 = nn.Linear(hidden_dim, latent_dim)
 
 	def forward(self, x):
 		h = F.relu(self.fc1(x))
