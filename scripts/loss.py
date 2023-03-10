@@ -94,16 +94,17 @@ class CustomLoss(nn.Module):
 		"""
 
 		# numerical features cosine similarity loss
-		loss_numerical = 1 - F.cosine_similarity(input[:, :4], target[:, :4], dim=1)
+		# loss_numerical = 1 - F.cosine_similarity(input[:, :4], target[:, :4], dim=1)
+		loss_numerical = 1 - F.cosine_similarity(input, target, dim=1)
 
 		# one-hot-encoded features binary cross entropy loss
-		loss_categorical = 0.
-		for start, end in get_one_hot_index(cols):
-			start += 4
-			end += 4
-			loss_numerical += F.binary_cross_entropy(input[:, start:end], target[:, start:end])
+		# loss_categorical = 0.
+		# for start, end in get_one_hot_index(cols):
+		# 	start += 4
+		# 	end += 4
+		# 	loss_numerical += F.binary_cross_entropy(input[:, start:end], target[:, start:end])
 
 		# kullback-leibler divergence loss
 		loss_kdl = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
 
-		return loss_numerical + loss_categorical + loss_kdl
+		return loss_numerical + loss_kdl

@@ -1,5 +1,5 @@
 hidden_dim: 128
-latent_dim: 32
+latent_dim: 6
 batch_size: 64  # due to triplet loss effective batch size is 3 times this value
 epochs: 1000
 learning_rate: 0.0001

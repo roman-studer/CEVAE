@@ -164,9 +164,9 @@ class TripletDataset(Dataset, ABC):
         df[self.label_col] = labels
 
         # normalize columns if columns have values > 0
-        for col in df.columns:
-            if col != self.label_col and df[col].max() > 0:
-                df[col] = (df[col] - df[col].min()) / (df[col].max() - df[col].min())
+        # for col in df.columns:
+        #     if col != self.label_col and df[col].max() > 0:
+        #         df[col] = (df[col] - df[col].min()) / (df[col].max() - df[col].min())
 
         # drop columns with nan values
         df = df.dropna(axis=1)
