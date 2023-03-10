@@ -139,6 +139,7 @@ def main(params):
 				print("Triplet loss: {:.4f}".format(running_triplet/len(train_loader)))
 
 		if epoch % 100 == 0:
+
 			if best_current_loss is None:
 				best_current_loss = running_loss / len(train_loader)
 
@@ -175,6 +176,7 @@ if __name__ == '__main__':
 	parser.add_argument('--margin', type=float, default=hp.margin, help='margin for triplet loss')
 	parser.add_argument('--verbose', type=bool, default=hp.verbose, help='verbose')
 	parser.add_argument('--device', type=str, default=hp.device, help='device to use')
+	parser.add_argument('--target_label', type=str, default=hp.target_label, help='target label')
 
 	# early stopping
 	parser.add_argument('--use_early_stop', action='store_true', default=False)
