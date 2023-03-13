@@ -7,8 +7,7 @@ import uuid
 class WandBLogger:
     def __init__(self):
         c = config.WandBConfig()
-        if c.run_name is None:
-            c.run_name = str(uuid.uuid4())
+        c.run_name = str(uuid.uuid4())
         self.wandb = wandb
         self.wandb.init(project=c.project_name, entity=c.entity, name=c.run_name)
         self.run_name = self.wandb.run.name
