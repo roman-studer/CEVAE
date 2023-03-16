@@ -114,9 +114,6 @@ class TripletDataset(Dataset, ABC):
         else:
             self.data = df
 
-        # groub by label and drop all labels with less than 2 samples
-        self.data = self.data.groupby(self.label_col).filter(lambda x: len(x) > 1)
-
         self.labels = np.array(self.data[self.label_col])
 
         if self.label_col is "genus":
