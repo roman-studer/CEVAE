@@ -114,7 +114,13 @@ class TripletDataset(Dataset, ABC):
         else:
             self.data = df
 
-        self.inputs = np.array(self.data.drop(columns=[self.label_col]))
+        if self.label_col is "genus":
+            self.inputs = np.array(self.data.drop(columns=["family", self.label_col]))
+        elif self.label_col is "family":
+            self.inputs = np.array(self.data.drop(columns=["genus", self.label_col]))
+        else:
+            self.inputs = np.array(self.data.drop(columns=[self.label_col]))
+
         self.labels = np.array(self.data[self.label_col])
 
         if type(self.labels[0]) == str:
