@@ -34,7 +34,7 @@ def get_one_hot_index(cols):
 class TabularDataset(Dataset, ABC):
     """Tabular Dataset for contrastive learning using a VAE model"""
 
-    def __init__(self, df = None, label_col = 'label'):
+    def __init__(self, df=None, label_col='label'):
         """
         Initializes the dataset. If no dataframe is given, the data is loaded from the csv file
         and normalized. If a dataframe is given, it is assumed that the data is already normalized
@@ -76,7 +76,7 @@ class TabularDataset(Dataset, ABC):
         df = df._get_numeric_data()
         df[self.label_col] = labels
 
-        #normalize columns
+        # normalize columns
         for col in df.columns:
             if col != self.label_col:
                 df[col] = (df[col] - df[col].min()) / (df[col].max() - df[col].min())
@@ -98,7 +98,7 @@ class TabularDataset(Dataset, ABC):
 class TripletDataset(Dataset, ABC):
     """Tabular Dataset generating triplets for contrastive learning using a VAE model"""
 
-    def __init__(self, df = None, label_col = 'label', setting='train'):
+    def __init__(self, df=None, label_col='label', setting='train'):
         """
         Initializes the dataset. If no dataframe is given, the data is loaded from the csv file
         and normalized. If a dataframe is given, it is assumed that the data is already normalized
@@ -119,6 +119,8 @@ class TripletDataset(Dataset, ABC):
 
         if type(self.labels[0]) == str:
             self.__encode_labels()
+        else:
+            self.label_names = self.labels
 
         self.one_hot_index = get_one_hot_index(self.data.columns)
 
@@ -131,7 +133,7 @@ class TripletDataset(Dataset, ABC):
         :param idx: index of anchor point
         :return: anchor, postive, negative, labels
         """
-        anchor_idx, postive_idx, negative_idx =  self.__get_triplet(idx)
+        anchor_idx, postive_idx, negative_idx = self.__get_triplet(idx)
 
         anchor = torch.from_numpy(self.inputs[anchor_idx]).float()
         postive = torch.from_numpy(self.inputs[postive_idx]).float()
@@ -160,7 +162,7 @@ class TripletDataset(Dataset, ABC):
 
         # drop non numerical columns except for label
         labels = df[self.label_col]
-        df = df._get_numeric_data() # naughty
+        df = df._get_numeric_data()  # naughty
         df[self.label_col] = labels
 
         # normalize columns if columns have values > 0
@@ -203,4 +205,3 @@ class TripletDataset(Dataset, ABC):
         negative_idx = np.random.choice(self.data[self.data[self.label_col] == negative_label].index)
 
         return anchor_idx, positive_idx, negative_idx
-
