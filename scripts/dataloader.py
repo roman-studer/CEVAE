@@ -122,7 +122,7 @@ class TripletDataset(Dataset, ABC):
         else:
             self.label_names = self.labels
 
-        self.one_hot_index = get_one_hot_index(self.data.columns)
+        #self.one_hot_index = get_one_hot_index(self.data.columns)
 
     def __len__(self):
         return len(self.data)
